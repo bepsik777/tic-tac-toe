@@ -8,15 +8,14 @@ const gameBoard = (() => {
 
 
 
-const player = (symbol) => {
-  this.symbol = symbol;
-  const makeMove = (field) => {
-    gameBoard.array[field] = symbol;
-    // How to use gameLogic.checkForWinner when it was declared later in the code?
-    console.log(gameBoard);
-  };
-  return { makeMove };
-};
+// const player = (symbol) => {
+//   this.symbol = symbol;
+//   const makeMove = (field) => {
+//     gameBoard.array[field] = symbol;
+//     console.log(gameBoard);
+//   };
+//   return { makeMove };
+// };
 
 
 
@@ -24,15 +23,9 @@ const gameLogic = (() => {
   let isThereWinner = false;
   let winner;
 
-  function createPlayers() {
-    const playerOneSymbol = prompt('X or O?');
-    this.playerOne = player(playerOneSymbol);
-    if (playerOneSymbol === 'X') {
-      this.playerTwo = player('O');
-    } else if (playerOneSymbol === 'O') {
-      this.playerTwo = player('X');
-    }
-  }
+
+
+
 
   const winningOptions = [
     [0, 1, 2],
@@ -60,8 +53,31 @@ const gameLogic = (() => {
         isThereWinner = true;
         winner = gameLogic.playerTwo;
       }
+      console.log(isThereWinner);
+      console.log(winner);
     });
   };
+
+  const player = (symbol) => {
+    this.symbol = symbol;
+    const makeMove = (field) => {
+      gameBoard.array[field] = symbol;
+      checkForWinner();
+      console.log(gameBoard);
+    };
+    return { makeMove };
+  };
+
+  function createPlayers() {
+    const playerOneSymbol = prompt('X or O?');
+    this.playerOne = player(playerOneSymbol);
+    if (playerOneSymbol === 'X') {
+      this.playerTwo = player('O');
+    } else if (playerOneSymbol === 'O') {
+      this.playerTwo = player('X');
+    }
+  }
+
 
   return {
     createPlayers,
@@ -71,4 +87,6 @@ const gameLogic = (() => {
   };
 })();
 
-gameLogic.checkForWinner();
+gameLogic.createPlayers();
+gameLogic.playerOne.makeMove(2);
+
