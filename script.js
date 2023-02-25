@@ -1,8 +1,8 @@
 const gameBoard = (() => {
   const array = [
-    'x', 'x', 'x',
-    'o', 'o', 'x',
-    'x', 'x', 'o'];
+    'X', 'X', 'O',
+    'O', 'O', 'X',
+    'X', 'X'];
   return { array };
 })();
 
@@ -18,27 +18,25 @@ const gameBoard = (() => {
 // };
 
 
-
+// game logic module
 const gameLogic = (() => {
   let isThereWinner = false;
   let winner;
 
 
 
+  function checkForWinner() {
+    const winningOptions = [
+      [0, 1, 2],
+      [3, 4, 5],
+      [6, 7, 8],
+      [0, 3, 6],
+      [1, 4, 7],
+      [2, 5, 8],
+      [0, 4, 8],
+      [2, 4, 6],
+    ];
 
-
-  const winningOptions = [
-    [0, 1, 2],
-    [3, 4, 5],
-    [6, 7, 8],
-    [0, 3, 6],
-    [1, 4, 7],
-    [2, 5, 8],
-    [0, 4, 8],
-    [2, 4, 6],
-  ];
-
-  const checkForWinner = () => {
     winningOptions.forEach((option) => {
       let xCount = 0;
       let oCount = 0;
@@ -48,27 +46,47 @@ const gameLogic = (() => {
       });
       if (xCount === 3) {
         isThereWinner = true;
-        winner = gameLogic.playerOne;
+        winner = 'Player One';
       } else if (oCount === 3) {
         isThereWinner = true;
-        winner = gameLogic.playerTwo;
+        winner = 'Player Two';
       }
-      console.log(isThereWinner);
-      console.log(winner);
     });
+    console.log(isThereWinner);
+    console.log(winner);
+  }
+
+  const endGame = () => {
+    gameBoard.array = [];
+    isThereWinner = false;
+    winner = undefined;
   };
 
+
+  // player factory function
   const player = (symbol) => {
     this.symbol = symbol;
     const makeMove = (field) => {
+      // exit function if field is bigger then the original board (which is 8)
+      if (field > 8) {
+        console.log('Impossible Move');
+        return;
+      }
       gameBoard.array[field] = symbol;
       checkForWinner();
+      if (isThereWinner === true) {
+        console.log(`and the winner is, ${winner}!`);
+        endGame();
+      } else if (isThereWinner === false && gameBoard.array.length === 9) {
+        console.log('It is a draw');
+        endGame();
+      }
       console.log(gameBoard);
     };
     return { makeMove };
   };
 
-  function createPlayers() {
+  function startGame() {
     const playerOneSymbol = prompt('X or O?');
     this.playerOne = player(playerOneSymbol);
     if (playerOneSymbol === 'X') {
@@ -79,14 +97,15 @@ const gameLogic = (() => {
   }
 
 
+
   return {
-    createPlayers,
+    startGame,
     checkForWinner,
     isThereWinner,
     winner,
   };
 })();
 
-gameLogic.createPlayers();
-gameLogic.playerOne.makeMove(2);
+gameLogic.startGame();
+gameLogic.playerOne.makeMove(9);
 
