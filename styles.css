@@ -3,3 +3,42 @@
     box-sizing: border-box;
 }
 
+body {
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.gameboard {
+    height: 30rem;
+    width: 30rem;
+
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    grid-template-rows: 1fr 1fr 1fr;
+}
+
+.field {
+    border: 1px solid black;
+    font-size: 6rem;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.row-one {
+    border-top: none;
+}
+
+.row-three {
+    border-bottom: none;
+}
+
+.column-one {
+    border-left: none;
+}
+
+.column-three {
+    border-right: none;
+}
