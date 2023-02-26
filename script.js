@@ -1,8 +1,5 @@
 const gameBoard = (() => {
-  const array = [
-    'X', 'X', 'O',
-    'O', 'O', 'X',
-    'X', 'X'];
+  const array = [];
   return { array };
 })();
 
@@ -21,8 +18,15 @@ const gameBoard = (() => {
 // game logic module
 const gameLogic = (() => {
   let isThereWinner = false;
+  let playerTurn = 1;
   let winner;
 
+  const endGame = () => {
+    gameBoard.array = [];
+    isThereWinner = false;
+    winner = undefined;
+    playerTurn = 1;
+  };
 
 
   function checkForWinner() {
@@ -54,35 +58,47 @@ const gameLogic = (() => {
     });
     console.log(isThereWinner);
     console.log(winner);
+
+    if (isThereWinner === true) {
+      console.log(`and the winner is, ${winner}!`);
+      endGame();
+    } else if (isThereWinner === false && gameBoard.array.length === 9) {
+      console.log('It is a draw');
+      endGame();
+    }
   }
 
-  const endGame = () => {
-    gameBoard.array = [];
-    isThereWinner = false;
-    winner = undefined;
-  };
 
 
   // player factory function
   const player = (symbol) => {
     this.symbol = symbol;
+
     const makeMove = (field) => {
-      // exit function if field is bigger then the original board (which is 8)
+      console.log(playerTurn);
+      // exit function if field is out of board (which is 8)
       if (field > 8) {
-        console.log('Impossible Move');
+        console.log('Invalid Move');
         return;
       }
-      gameBoard.array[field] = symbol;
-      checkForWinner();
-      if (isThereWinner === true) {
-        console.log(`and the winner is, ${winner}!`);
-        endGame();
-      } else if (isThereWinner === false && gameBoard.array.length === 9) {
-        console.log('It is a draw');
-        endGame();
+      // exit function if field is already taken
+      if (gameBoard.array[field] !== undefined) {
+        console.log('Invalid Move');
+        return;
       }
+
+      gameBoard.array[field] = symbol;
+
+      // why it does not change the playerTurn?
+      if (playerTurn === 1) {
+        playerTurn = 2;
+      } else {
+        playerTurn = 1;
+      }
+      checkForWinner();
       console.log(gameBoard);
     };
+
     return { makeMove };
   };
 
@@ -96,16 +112,22 @@ const gameLogic = (() => {
     }
   }
 
+  const play = (field) => {
+    if (playerTurn === 1) {
+      gameLogic.playerOne.makeMove(field);
+    } else if (playerTurn === 2) {
+      gameLogic.playerTwo.makeMove(field);
+    }
+  };
 
 
   return {
     startGame,
-    checkForWinner,
-    isThereWinner,
-    winner,
+    play,
+    playerTurn,
   };
 })();
 
 gameLogic.startGame();
-gameLogic.playerOne.makeMove(9);
+gameLogic.play(1);
 
