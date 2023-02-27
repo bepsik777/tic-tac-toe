@@ -1,18 +1,7 @@
 const gameBoard = (() => {
-  const array = [];
+  const array = ['X', 'O'];
   return { array };
 })();
-
-
-
-// const player = (symbol) => {
-//   this.symbol = symbol;
-//   const makeMove = (field) => {
-//     gameBoard.array[field] = symbol;
-//     console.log(gameBoard);
-//   };
-//   return { makeMove };
-// };
 
 
 // game logic module
@@ -89,14 +78,13 @@ const gameLogic = (() => {
 
       gameBoard.array[field] = symbol;
 
-      // why it does not change the playerTurn?
       if (playerTurn === 1) {
         playerTurn = 2;
       } else {
         playerTurn = 1;
       }
       checkForWinner();
-      console.log(gameBoard);
+      console.log(gameBoard.array);
     };
 
     return { makeMove };
@@ -124,10 +112,35 @@ const gameLogic = (() => {
   return {
     startGame,
     play,
-    playerTurn,
   };
 })();
 
-gameLogic.startGame();
-gameLogic.play(1);
+const displayControler = (() => {
+  const fields = document.querySelectorAll('.field');
+  console.log(fields);
+  // set dataset number to gameboard fields index
+
+  for (let i = 0; i < 9; i++) {
+    fields[i].dataset.id = i;
+  }
+
+  const render = () => {
+    fields.forEach((field) => {
+      const indexOfField = gameBoard.array.indexOf(field);
+      field.textContent = gameBoard.array[field.dataset.id];
+    });
+  };
+
+
+
+
+  return {
+    render,
+  };
+})();
+
+displayControler.render();
+
+// gameLogic.startGame();
+// gameLogic.play(1);
 
