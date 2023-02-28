@@ -1,5 +1,5 @@
 const gameBoard = (() => {
-  const array = ['X', 'O'];
+  const array = [];
   return { array };
 })();
 
@@ -9,12 +9,27 @@ const gameLogic = (() => {
   let isThereWinner = false;
   let playerTurn = 1;
   let winner;
+  let playEnabled;
 
-  const endGame = () => {
+
+
+  const noEmptyFields = (arr) => {
+    let count = 0;
+    for (let i = 0; i < arr.length; i++) {
+      if (arr[i] !== undefined) count += 1;
+    }
+    if (count === 9) {
+      return true;
+    }
+    return false;
+  };
+
+  const reset = () => {
     gameBoard.array = [];
     isThereWinner = false;
     winner = undefined;
     playerTurn = 1;
+    playEnabled = true;
   };
 
 
@@ -45,15 +60,15 @@ const gameLogic = (() => {
         winner = 'Player Two';
       }
     });
-    console.log(isThereWinner);
-    console.log(winner);
 
     if (isThereWinner === true) {
       console.log(`and the winner is, ${winner}!`);
-      endGame();
-    } else if (isThereWinner === false && gameBoard.array.length === 9) {
+      playEnabled = false;
+    } else if (isThereWinner === false
+        && gameBoard.array.length === 9
+        && noEmptyFields(gameBoard.array) === true) {
       console.log('It is a draw');
-      endGame();
+      playEnabled = false;
     }
   }
 
@@ -62,7 +77,6 @@ const gameLogic = (() => {
   // player factory function
   const player = (symbol) => {
     this.symbol = symbol;
-
     const makeMove = (field) => {
       console.log(playerTurn);
       // exit function if field is out of board (which is 8)
@@ -91,6 +105,10 @@ const gameLogic = (() => {
   };
 
   function startGame() {
+    reset();
+    /* eslint-disable */
+    displayControler.render();
+    /* eslint-enable */
     const playerOneSymbol = prompt('X or O?');
     this.playerOne = player(playerOneSymbol);
     if (playerOneSymbol === 'X') {
@@ -101,6 +119,7 @@ const gameLogic = (() => {
   }
 
   const play = (field) => {
+    if (playEnabled === false) return;
     if (playerTurn === 1) {
       gameLogic.playerOne.makeMove(field);
     } else if (playerTurn === 2) {
@@ -115,11 +134,13 @@ const gameLogic = (() => {
   };
 })();
 
+
+
 const displayControler = (() => {
   const fields = document.querySelectorAll('.field');
-  console.log(fields);
-  // set dataset number to gameboard fields index
+  const newGameButton = document.querySelector('.new-game');
 
+  // set dataset number to gameboard fields index
   for (let i = 0; i < 9; i++) {
     fields[i].dataset.id = i;
   }
@@ -131,7 +152,17 @@ const displayControler = (() => {
     });
   };
 
+  function clickToPlay(e) {
+    gameLogic.play(e.target.dataset.id);
+    render();
+  }
 
+  // Event Listeners
+
+  fields.forEach((field) => {
+    field.addEventListener('click', clickToPlay);
+  });
+  newGameButton.addEventListener('click', gameLogic.startGame.bind(gameLogic));
 
 
   return {
@@ -141,6 +172,26 @@ const displayControler = (() => {
 
 displayControler.render();
 
-// gameLogic.startGame();
-// gameLogic.play(1);
 
+/* THINGS TO DO:
+
+# Comment code better so it is more readable for you!
+
+# after game is over:
+-> leave the player marks on board (maybe change the color of the winning combination)
+-> disable the possibility to play, by clicking the board or by console.
+-> add [new game] button, that reset the all the game and reset the board
+    --> reset game and clear display should be separate functions?
+    --> should the buttons be added to html and hidden or added via javascript?
+
+# when page is loaded:
+-> welcome screen: choose player mark to start game.
+-> then diplay borad
+
+# AI:
+-> create a basic AI
+-> let player choose if he wants to play againt AI or another human (or himself XD)
+-> try to create an unbeatable algorithm using minimax?
+
+
+*/
