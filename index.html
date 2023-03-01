@@ -8,19 +8,36 @@
     <title>Document</title>
 </head>
 <body>
-    <div class="gameboard">
-            <div class="field row-one column-one"></div>
-            <div class="field row-one"></div>
-            <div class="field row-one column-three"></div>
-            <div class="field row-two column-one"></div>
-            <div class="field row-two"></div>
-            <div class="field row-two column-three"></div>
-            <div class="field row-three column-one"></div>
-            <div class="field row-three"></div>
-            <div class="field row-three column-three"></div>
+    <div class="gameboard-container hidden">
+        <div class="gameboard">
+                <div class="field row-one column-one"></div>
+                <div class="field row-one"></div>
+                <div class="field row-one column-three"></div>
+                <div class="field row-two column-one"></div>
+                <div class="field row-two"></div>
+                <div class="field row-two column-three"></div>
+                <div class="field row-three column-one"></div>
+                <div class="field row-three"></div>
+                <div class="field row-three column-three"></div>
+        </div>
+        <button class="new-game hidden">New Game</button>
     </div>
-    <button class="new-game">New Game</button>
+    <div class="welcome-container">
+        <div class="choose-mark-text">
+            <p class="choose-mark">Player one, choose your mark</p>
+        </div>    
+        <div class="choose-mark-container">
+            <div class="choose-box-container">
+                <div class="choose-box">X</div>
+            </div>
+            <div class="choose-box-container">
+                <div class="choose-box">O</div>
+            </div>
+        </div>
+        <div class="start-button-container">
 
+        </div>
+    </div>
 
 <script src="script.js"></script>
 </body>

@@ -1,3 +1,7 @@
+:root {
+    --system-ui: system-ui, "Segoe UI", Roboto, Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
+  }
+
 * {
     margin: 0;
     box-sizing: border-box;
@@ -5,10 +9,20 @@
 
 body {
     min-height: 100vh;
+    font-family: var(--system-ui);
+   
+}
+
+.gameboard-container {
+    min-height: 100vh;
     display: flex;
     flex-direction: column;
     justify-content: center;
     align-items: center;
+}
+
+.gameboard-container.hidden {
+    display: none;
 }
 
 .gameboard {
@@ -47,7 +61,67 @@ body {
 }
 
 .new-game {
-    display: block;
+    /* display: block; */
+    display: none;
     margin-top: 5rem;
     padding: 5px 10px;
 }
+
+/* Welcom screen */
+
+.welcome-container {
+    background-color: red;
+    min-height: 100vh; 
+}
+
+.welcome-container.hidden {
+    display: none;
+}
+
+.choose-mark-text {
+    font-size: 2rem;
+    display: flex;
+    justify-content: center;
+    align-items: flex-end;
+    height: 20vh;
+    background-color: aquamarine;
+    border: 1px solid black;
+}
+
+.choose-mark-container {
+    height: 70vh;
+    background-color:cornflowerblue;
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+}
+
+.choose-box-container {
+    height: 28rem;
+    border: 1px solid black;
+    display: flex;
+    flex-direction: column-reverse;
+}
+
+.choose-box {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    font-size: 20rem;
+    height: 25rem;
+    width: 25rem;
+    background-color: aqua;
+    cursor: pointer;
+}
+
+.start-button-container {
+    height: 10vh;
+    background-color: darkgrey;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+

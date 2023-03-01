@@ -78,7 +78,6 @@ const gameLogic = (() => {
   const player = (symbol) => {
     this.symbol = symbol;
     const makeMove = (field) => {
-      console.log(playerTurn);
       // exit function if field is out of board (which is 8)
       if (field > 8) {
         console.log('Invalid Move');
@@ -104,12 +103,12 @@ const gameLogic = (() => {
     return { makeMove };
   };
 
-  function startGame() {
+  function startGame(e) {
     reset();
     /* eslint-disable */
     displayControler.render();
     /* eslint-enable */
-    const playerOneSymbol = prompt('X or O?');
+    const playerOneSymbol = e.target.textContent; // (e) is the button on start screen in this case
     this.playerOne = player(playerOneSymbol);
     if (playerOneSymbol === 'X') {
       this.playerTwo = player('O');
@@ -137,8 +136,26 @@ const gameLogic = (() => {
 
 
 const displayControler = (() => {
+  const gameBoardContainer = document.querySelector('.gameboard-container');
+  const welcomeContainer = document.querySelector('.welcome-container');
   const fields = document.querySelectorAll('.field');
   const newGameButton = document.querySelector('.new-game');
+  const chooseMarkButtonsContainer = document.querySelectorAll('.choose-box-container');
+  const [xContainer, oContainer] = chooseMarkButtonsContainer;
+  const chooseMarkButtons = document.querySelectorAll('.choose-box');
+  const [xButton, oButton] = chooseMarkButtons;
+  const playerOneTag = document.createElement('p');
+  const playerTwoTag = document.createElement('p');
+  const startButtonContainer = document.querySelector('.start-button-container');
+  const startButton = document.createElement('button');
+  startButton.textContent = 'Start Game';
+  startButton.className = 'start-button';
+  let clicked = false;
+  playerOneTag.textContent = 'Player One';
+  playerOneTag.classList.add = 'player-tag';
+  playerTwoTag.classList.add = 'player-tag';
+  playerTwoTag.textContent = 'Player Two';
+
 
   // set dataset number to gameboard fields index
   for (let i = 0; i < 9; i++) {
@@ -157,12 +174,42 @@ const displayControler = (() => {
     render();
   }
 
+  function chooseMark(e) {
+    gameLogic.startGame(e);
+    e.target.parentNode.appendChild(playerOneTag);
+    if (e.target === xButton) {
+      oContainer.appendChild(playerTwoTag);
+    } else if (e.target === oButton) {
+      xContainer.appendChild(playerTwoTag);
+    }
+    clicked = true;
+    if (clicked) {
+      chooseMarkButtons.forEach((button) => {
+        button.removeEventListener('click', chooseMark);
+      });
+    }
+    startButtonContainer.appendChild(startButton);
+  }
+
+  function switchScreen() {
+    gameBoardContainer.classList.toggle('hidden');
+    welcomeContainer.classList.toggle('hidden');
+  }
+
+
   // Event Listeners
 
   fields.forEach((field) => {
     field.addEventListener('click', clickToPlay);
   });
+
   newGameButton.addEventListener('click', gameLogic.startGame.bind(gameLogic));
+
+  chooseMarkButtons.forEach((button) => {
+    button.addEventListener('click', chooseMark);
+  });
+
+  startButton.addEventListener('click', switchScreen);
 
 
   return {
