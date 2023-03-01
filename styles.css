@@ -98,7 +98,6 @@ body {
 
 .choose-box-container {
     height: 28rem;
-    border: 1px solid black;
     display: flex;
     flex-direction: column-reverse;
 }

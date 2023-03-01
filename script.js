@@ -10,6 +10,8 @@ const gameLogic = (() => {
   let playerTurn = 1;
   let winner;
   let playEnabled;
+  let playerOneSymbol;
+
 
 
 
@@ -30,6 +32,7 @@ const gameLogic = (() => {
     winner = undefined;
     playerTurn = 1;
     playEnabled = true;
+    playerOneSymbol = undefined;
   };
 
 
@@ -54,10 +57,10 @@ const gameLogic = (() => {
       });
       if (xCount === 3) {
         isThereWinner = true;
-        winner = 'Player One';
+        winner = 'Player "X"';
       } else if (oCount === 3) {
         isThereWinner = true;
-        winner = 'Player Two';
+        winner = 'Player "O"';
       }
     });
 
@@ -103,12 +106,17 @@ const gameLogic = (() => {
     return { makeMove };
   };
 
+  const getIsThereWinner = () => isThereWinner;
+
+  const getWinner = () => winner;
+
+
   function startGame(e) {
     reset();
     /* eslint-disable */
     displayControler.render();
     /* eslint-enable */
-    const playerOneSymbol = e.target.textContent; // (e) is the button on start screen in this case
+    playerOneSymbol = e.target.textContent; // (e) is the button on welcome screen in this case
     this.playerOne = player(playerOneSymbol);
     if (playerOneSymbol === 'X') {
       this.playerTwo = player('O');
@@ -130,6 +138,8 @@ const gameLogic = (() => {
   return {
     startGame,
     play,
+    getIsThereWinner,
+    getWinner,
   };
 })();
 
@@ -148,9 +158,13 @@ const displayControler = (() => {
   const playerTwoTag = document.createElement('p');
   const startButtonContainer = document.querySelector('.start-button-container');
   const startButton = document.createElement('button');
+  const restartButton = document.createElement('button');
   startButton.textContent = 'Start Game';
   startButton.className = 'start-button';
+  restartButton.className = 'restart-button';
+  restartButton.textContent = 'Restart Game';
   let clicked = false;
+  const winningMsg = document.createElement('p');
   playerOneTag.textContent = 'Player One';
   playerOneTag.classList.add = 'player-tag';
   playerTwoTag.classList.add = 'player-tag';
@@ -172,9 +186,18 @@ const displayControler = (() => {
   function clickToPlay(e) {
     gameLogic.play(e.target.dataset.id);
     render();
+
+    const winner = gameLogic.getWinner();
+    const isThereWinner = gameLogic.getIsThereWinner();
+    if (isThereWinner) {
+      winningMsg.textContent = `The winner is ${winner}`;
+      gameBoardContainer.appendChild(winningMsg);
+      gameBoardContainer.appendChild(restartButton);
+    }
   }
 
   function chooseMark(e) {
+    console.log(this);
     gameLogic.startGame(e);
     e.target.parentNode.appendChild(playerOneTag);
     if (e.target === xButton) {
@@ -191,9 +214,18 @@ const displayControler = (() => {
     startButtonContainer.appendChild(startButton);
   }
 
-  function switchScreen() {
+  function switchScreen(e) {
+    clicked = false;
+    chooseMarkButtons.forEach((button) => {
+      button.addEventListener('click', chooseMark);
+    });
     gameBoardContainer.classList.toggle('hidden');
     welcomeContainer.classList.toggle('hidden');
+    restartButton.remove();
+    startButton.remove();
+    playerOneTag.remove();
+    playerTwoTag.remove();
+    winningMsg.remove();
   }
 
 
@@ -211,9 +243,14 @@ const displayControler = (() => {
 
   startButton.addEventListener('click', switchScreen);
 
+  restartButton.addEventListener('click', switchScreen);
+
+
 
   return {
     render,
+    xButton,
+    oButton,
   };
 })();
 
