@@ -14,7 +14,7 @@ const gameLogic = (() => {
 
 
 
-
+  // Check if there are no undefined fields in board. if so, returns true
   const noEmptyFields = (arr) => {
     let count = 0;
     for (let i = 0; i < arr.length; i++) {
@@ -103,6 +103,7 @@ const gameLogic = (() => {
       console.log(gameBoard.array);
     };
 
+
     return { makeMove };
   };
 
@@ -135,13 +136,59 @@ const gameLogic = (() => {
   };
 
 
+
+  function startGameWithAI() {
+    reset();
+    /* eslint-disable */
+    displayControler.render();
+    /* eslint-enable */
+    this.playerOne = player('X');
+    this.playerTwo = player('O');
+    console.log(this);
+  }
+
+  function playWithAi(field) {
+    // exit function if field is out of board (which is 8)
+    if (field > 8) {
+      console.log('Invalid Move');
+      return;
+    }
+    // exit function if field is already taken
+    if (gameBoard.array[field] !== undefined) {
+      console.log('Invalid Move');
+      return;
+    }
+    console.log(this.playerTwo);
+    let aiPossibleMove = false;
+    const aiMove = () => Math.floor(Math.random() * 10);
+    this.playerOne.makeMove(field);
+    while (aiPossibleMove === false) {
+      const move = aiMove();
+      if (gameBoard.array[move] === undefined && move <= 8) {
+        aiPossibleMove = true;
+        this.playerTwo.makeMove(move);
+      }
+    }
+    /* eslint-disable */
+     displayControler.render();
+     /* eslint-enable */
+  }
+
+
+
   return {
+    startGameWithAI,
+    playWithAi,
     startGame,
     play,
     getIsThereWinner,
     getWinner,
   };
 })();
+
+
+
+
 
 
 
@@ -159,12 +206,12 @@ const displayControler = (() => {
   const startButtonContainer = document.querySelector('.start-button-container');
   const startButton = document.createElement('button');
   const restartButton = document.createElement('button');
+  const winningMsg = document.createElement('p');
   startButton.textContent = 'Start Game';
   startButton.className = 'start-button';
   restartButton.className = 'restart-button';
   restartButton.textContent = 'Restart Game';
   let clicked = false;
-  const winningMsg = document.createElement('p');
   playerOneTag.textContent = 'Player One';
   playerOneTag.classList.add = 'player-tag';
   playerTwoTag.classList.add = 'player-tag';
@@ -257,20 +304,15 @@ const displayControler = (() => {
 displayControler.render();
 
 
+
 /* THINGS TO DO:
 
+!!!START BY THIS!!!
 # Comment code better so it is more readable for you!
 
-# after game is over:
--> leave the player marks on board (maybe change the color of the winning combination)
--> disable the possibility to play, by clicking the board or by console.
--> add [new game] button, that reset the all the game and reset the board
-    --> reset game and clear display should be separate functions?
-    --> should the buttons be added to html and hidden or added via javascript?
+# Change the way the player marks are chose (if in the dev console i change
+    the html of mark boxes, the game will never end, because it works only with X and O)
 
-# when page is loaded:
--> welcome screen: choose player mark to start game.
--> then diplay borad
 
 # AI:
 -> create a basic AI
