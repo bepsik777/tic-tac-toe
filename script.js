@@ -11,6 +11,8 @@ const gameLogic = (() => {
   let winner;
   let playEnabled;
   let playerOneSymbol;
+  const gameVsAi = false;
+  const gameVsPlayer = true;
 
 
 
@@ -104,7 +106,7 @@ const gameLogic = (() => {
     };
 
 
-    return { makeMove };
+    return { makeMove, symbol };
   };
 
   const getIsThereWinner = () => isThereWinner;
@@ -114,6 +116,8 @@ const gameLogic = (() => {
 
   function startGame(e) {
     reset();
+    // gameVsAi = false;
+    // gameVsPlayer = true;
     /* eslint-disable */
     displayControler.render();
     /* eslint-enable */
@@ -137,47 +141,43 @@ const gameLogic = (() => {
 
 
 
-  function startGameWithAI() {
-    reset();
-    /* eslint-disable */
-    displayControler.render();
-    /* eslint-enable */
-    this.playerOne = player('X');
-    this.playerTwo = player('O');
-    console.log(this);
-  }
 
   function playWithAi(field) {
-    // exit function if field is out of board (which is 8)
-    if (field > 8) {
-      console.log('Invalid Move');
-      return;
-    }
+    const aiMove = () => Math.floor(Math.random() * 10);
+    let aiPossibleMove = false;
+
+    if (playEnabled === false) return;
+
     // exit function if field is already taken
     if (gameBoard.array[field] !== undefined) {
       console.log('Invalid Move');
       return;
     }
-    console.log(this.playerTwo);
-    let aiPossibleMove = false;
-    const aiMove = () => Math.floor(Math.random() * 10);
+
     this.playerOne.makeMove(field);
+
+    /* eslint-disable */
+    displayControler.render();
+    /* eslint-enable */
+
+    if (playEnabled === false) return;
     while (aiPossibleMove === false) {
       const move = aiMove();
       if (gameBoard.array[move] === undefined && move <= 8) {
         aiPossibleMove = true;
         this.playerTwo.makeMove(move);
       }
+      /* eslint-disable */
+       displayControler.render();
+       /* eslint-enable */
     }
-    /* eslint-disable */
-     displayControler.render();
-     /* eslint-enable */
   }
 
 
 
   return {
-    startGameWithAI,
+    gameVsPlayer,
+    gameVsAi,
     playWithAi,
     startGame,
     play,
@@ -185,11 +185,6 @@ const gameLogic = (() => {
     getWinner,
   };
 })();
-
-
-
-
-
 
 
 const displayControler = (() => {
@@ -207,6 +202,8 @@ const displayControler = (() => {
   const startButton = document.createElement('button');
   const restartButton = document.createElement('button');
   const winningMsg = document.createElement('p');
+  const chooseEnemyContainer = document.querySelector('.choose-human-or-ai-ctnr');
+  const chooseEnemyButtons = document.querySelectorAll('.choose-enemy');
   startButton.textContent = 'Start Game';
   startButton.className = 'start-button';
   restartButton.className = 'restart-button';
@@ -243,8 +240,19 @@ const displayControler = (() => {
     }
   }
 
+  function clickToPlayWithAi(e) {
+    gameLogic.playWithAi(e.target.dataset.id);
+    const winner = gameLogic.getWinner();
+    const isThereWinner = gameLogic.getIsThereWinner();
+    if (isThereWinner) {
+      winningMsg.textContent = `The winner is ${winner}`;
+      gameBoardContainer.appendChild(winningMsg);
+      gameBoardContainer.appendChild(restartButton);
+    }
+  }
+
+
   function chooseMark(e) {
-    console.log(this);
     gameLogic.startGame(e);
     e.target.parentNode.appendChild(playerOneTag);
     if (e.target === xButton) {
@@ -262,7 +270,6 @@ const displayControler = (() => {
   }
 
   function switchScreen(e) {
-    clicked = false;
     chooseMarkButtons.forEach((button) => {
       button.addEventListener('click', chooseMark);
     });
@@ -278,11 +285,39 @@ const displayControler = (() => {
 
   // Event Listeners
 
-  fields.forEach((field) => {
-    field.addEventListener('click', clickToPlay);
-  });
+  // fields.forEach((field) => {
+  //   // field.addEventListener('click', clickToPlayWithAi);
+  //   if (gameLogic.gameVsPlayer === true) {
+  //     field.addEventListener('click', clickToPlay);
+  //   } else if (gameLogic.gameVsAi === true) {
+  //     fields.addEventListener('click', clickToPlayWithAi);
+  //   }
+  // });
 
   newGameButton.addEventListener('click', gameLogic.startGame.bind(gameLogic));
+
+  chooseEnemyButtons.forEach((button) => {
+    button.addEventListener('click', (e) => {
+      clicked = false;
+      chooseEnemyContainer.classList.toggle('hidden');
+      welcomeContainer.classList.toggle('hidden');
+      if (e.target.textContent === 'VS. AI') {
+        gameLogic.gameVsAi = true;
+        gameLogic.gameVsPlayer = false;
+        fields.forEach((field) => {
+          field.removeEventListener('click', clickToPlay);
+          field.addEventListener('click', clickToPlayWithAi);
+        });
+      } else if (e.target.textContent === 'VS. HUMAN') {
+        gameLogic.gameVsAi = false;
+        gameLogic.gameVsPlayer = true;
+        fields.forEach((field) => {
+          field.removeEventListener('click', clickToPlayWithAi);
+          field.addEventListener('click', clickToPlay);
+        });
+      }
+    });
+  });
 
   chooseMarkButtons.forEach((button) => {
     button.addEventListener('click', chooseMark);
@@ -290,7 +325,18 @@ const displayControler = (() => {
 
   startButton.addEventListener('click', switchScreen);
 
-  restartButton.addEventListener('click', switchScreen);
+  restartButton.addEventListener('click', (e) => {
+    chooseMarkButtons.forEach((button) => {
+      button.addEventListener('click', chooseMark);
+    });
+    gameBoardContainer.classList.toggle('hidden');
+    chooseEnemyContainer.classList.toggle('hidden');
+    restartButton.remove();
+    startButton.remove();
+    playerOneTag.remove();
+    playerTwoTag.remove();
+    winningMsg.remove();
+  });
 
 
 

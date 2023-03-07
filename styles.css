@@ -123,4 +123,21 @@ body {
     align-items: center;
 }
 
+.choose-human-or-ai-ctnr {
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
 
+.choose-human-or-ai-ctnr.hidden {
+    display: none;
+}
+
+.choose-enemy {
+    border: none;
+    width: 200px;
+    height: 50px;
+    margin: 20px;
+}
