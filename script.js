@@ -9,6 +9,7 @@ const gameLogic = (() => {
   let isThereWinner = false;
   let playerTurn = 1;
   let winner;
+  let draw;
   let playEnabled;
   let playerOneSymbol;
   const gameVsAi = false;
@@ -16,7 +17,7 @@ const gameLogic = (() => {
 
 
 
-  // Check if there are no undefined fields in board. if so, returns true
+  // Check if there are no undefined fields in board.
   const noEmptyFields = (arr) => {
     let count = 0;
     for (let i = 0; i < arr.length; i++) {
@@ -32,6 +33,7 @@ const gameLogic = (() => {
     gameBoard.array = [];
     isThereWinner = false;
     winner = undefined;
+    draw = false;
     playerTurn = 1;
     playEnabled = true;
     playerOneSymbol = undefined;
@@ -67,12 +69,11 @@ const gameLogic = (() => {
     });
 
     if (isThereWinner === true) {
-      console.log(`and the winner is, ${winner}!`);
       playEnabled = false;
     } else if (isThereWinner === false
         && gameBoard.array.length === 9
         && noEmptyFields(gameBoard.array) === true) {
-      console.log('It is a draw');
+      draw = true;
       playEnabled = false;
     }
   }
@@ -85,12 +86,10 @@ const gameLogic = (() => {
     const makeMove = (field) => {
       // exit function if field is out of board (which is 8)
       if (field > 8) {
-        console.log('Invalid Move');
         return;
       }
       // exit function if field is already taken
       if (gameBoard.array[field] !== undefined) {
-        console.log('Invalid Move');
         return;
       }
 
@@ -102,26 +101,20 @@ const gameLogic = (() => {
         playerTurn = 1;
       }
       checkForWinner();
-      console.log(gameBoard.array);
     };
-
-
-    return { makeMove, symbol };
+    return { makeMove };
   };
-
   const getIsThereWinner = () => isThereWinner;
-
   const getWinner = () => winner;
+  const getDraw = () => draw;
 
 
   function startGame(e) {
     reset();
-    // gameVsAi = false;
-    // gameVsPlayer = true;
     /* eslint-disable */
     displayControler.render();
     /* eslint-enable */
-    playerOneSymbol = e.target.textContent; // (e) is the button on welcome screen in this case
+    playerOneSymbol = e.target.textContent; // (e) is the chooseMarkButton
     this.playerOne = player(playerOneSymbol);
     if (playerOneSymbol === 'X') {
       this.playerTwo = player('O');
@@ -143,37 +136,23 @@ const gameLogic = (() => {
 
 
   function playWithAi(field) {
+    if (gameBoard.array[field] !== undefined) return;
+
     const aiMove = () => Math.floor(Math.random() * 10);
     let aiPossibleMove = false;
 
-    if (playEnabled === false) return;
-
-    // exit function if field is already taken
-    if (gameBoard.array[field] !== undefined) {
-      console.log('Invalid Move');
-      return;
-    }
-
     this.playerOne.makeMove(field);
-
-    /* eslint-disable */
-    displayControler.render();
-    /* eslint-enable */
-
+    // if playeOne finish empty fields, exit to avoid infinite loop
     if (playEnabled === false) return;
+
     while (aiPossibleMove === false) {
       const move = aiMove();
       if (gameBoard.array[move] === undefined && move <= 8) {
         aiPossibleMove = true;
         this.playerTwo.makeMove(move);
       }
-      /* eslint-disable */
-       displayControler.render();
-       /* eslint-enable */
     }
   }
-
-
 
   return {
     gameVsPlayer,
@@ -183,6 +162,7 @@ const gameLogic = (() => {
     play,
     getIsThereWinner,
     getWinner,
+    getDraw,
   };
 })();
 
@@ -204,11 +184,11 @@ const displayControler = (() => {
   const winningMsg = document.createElement('p');
   const chooseEnemyContainer = document.querySelector('.choose-human-or-ai-ctnr');
   const chooseEnemyButtons = document.querySelectorAll('.choose-enemy');
+  let clicked = false;
   startButton.textContent = 'Start Game';
   startButton.className = 'start-button';
   restartButton.className = 'restart-button';
   restartButton.textContent = 'Restart Game';
-  let clicked = false;
   playerOneTag.textContent = 'Player One';
   playerOneTag.classList.add = 'player-tag';
   playerTwoTag.classList.add = 'player-tag';
@@ -222,35 +202,32 @@ const displayControler = (() => {
 
   const render = () => {
     fields.forEach((field) => {
-      const indexOfField = gameBoard.array.indexOf(field);
       field.textContent = gameBoard.array[field.dataset.id];
     });
   };
 
   function clickToPlay(e) {
-    gameLogic.play(e.target.dataset.id);
+    if (gameLogic.gameVsPlayer === true) {
+      gameLogic.play(e.target.dataset.id);
+    } else if (gameLogic.gameVsAi === true) {
+      gameLogic.playWithAi(e.target.dataset.id);
+    }
     render();
 
     const winner = gameLogic.getWinner();
     const isThereWinner = gameLogic.getIsThereWinner();
+    const draw = gameLogic.getDraw();
     if (isThereWinner) {
       winningMsg.textContent = `The winner is ${winner}`;
       gameBoardContainer.appendChild(winningMsg);
       gameBoardContainer.appendChild(restartButton);
     }
-  }
-
-  function clickToPlayWithAi(e) {
-    gameLogic.playWithAi(e.target.dataset.id);
-    const winner = gameLogic.getWinner();
-    const isThereWinner = gameLogic.getIsThereWinner();
-    if (isThereWinner) {
-      winningMsg.textContent = `The winner is ${winner}`;
+    if (draw === true) {
+      winningMsg.textContent = 'It is a draw';
       gameBoardContainer.appendChild(winningMsg);
       gameBoardContainer.appendChild(restartButton);
     }
   }
-
 
   function chooseMark(e) {
     gameLogic.startGame(e);
@@ -282,18 +259,6 @@ const displayControler = (() => {
     winningMsg.remove();
   }
 
-
-  // Event Listeners
-
-  // fields.forEach((field) => {
-  //   // field.addEventListener('click', clickToPlayWithAi);
-  //   if (gameLogic.gameVsPlayer === true) {
-  //     field.addEventListener('click', clickToPlay);
-  //   } else if (gameLogic.gameVsAi === true) {
-  //     fields.addEventListener('click', clickToPlayWithAi);
-  //   }
-  // });
-
   newGameButton.addEventListener('click', gameLogic.startGame.bind(gameLogic));
 
   chooseEnemyButtons.forEach((button) => {
@@ -301,18 +266,19 @@ const displayControler = (() => {
       clicked = false;
       chooseEnemyContainer.classList.toggle('hidden');
       welcomeContainer.classList.toggle('hidden');
+
       if (e.target.textContent === 'VS. AI') {
         gameLogic.gameVsAi = true;
         gameLogic.gameVsPlayer = false;
         fields.forEach((field) => {
           field.removeEventListener('click', clickToPlay);
-          field.addEventListener('click', clickToPlayWithAi);
+          field.addEventListener('click', clickToPlay);
         });
       } else if (e.target.textContent === 'VS. HUMAN') {
         gameLogic.gameVsAi = false;
         gameLogic.gameVsPlayer = true;
         fields.forEach((field) => {
-          field.removeEventListener('click', clickToPlayWithAi);
+          field.removeEventListener('click', clickToPlay);
           field.addEventListener('click', clickToPlay);
         });
       }
@@ -329,6 +295,7 @@ const displayControler = (() => {
     chooseMarkButtons.forEach((button) => {
       button.addEventListener('click', chooseMark);
     });
+
     gameBoardContainer.classList.toggle('hidden');
     chooseEnemyContainer.classList.toggle('hidden');
     restartButton.remove();
@@ -342,8 +309,6 @@ const displayControler = (() => {
 
   return {
     render,
-    xButton,
-    oButton,
   };
 })();
 
@@ -353,17 +318,9 @@ displayControler.render();
 
 /* THINGS TO DO:
 
-!!!START BY THIS!!!
-# Comment code better so it is more readable for you!
+#Improve UI
 
-# Change the way the player marks are chose (if in the dev console i change
+# Change the way the player marks are chosen (if in the dev console i change
     the html of mark boxes, the game will never end, because it works only with X and O)
-
-
-# AI:
--> create a basic AI
--> let player choose if he wants to play againt AI or another human (or himself XD)
--> try to create an unbeatable algorithm using minimax?
-
 
 */
