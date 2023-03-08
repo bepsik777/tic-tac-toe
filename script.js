@@ -9,6 +9,7 @@ const gameLogic = (() => {
   let isThereWinner = false;
   let playerTurn = 1;
   let winner;
+  let winningOption;
   let draw;
   let playEnabled;
   let playerOneSymbol;
@@ -33,6 +34,7 @@ const gameLogic = (() => {
     gameBoard.array = [];
     isThereWinner = false;
     winner = undefined;
+    winningOption = undefined;
     draw = false;
     playerTurn = 1;
     playEnabled = true;
@@ -62,9 +64,11 @@ const gameLogic = (() => {
       if (xCount === 3) {
         isThereWinner = true;
         winner = 'Player "X"';
+        winningOption = option;
       } else if (oCount === 3) {
         isThereWinner = true;
         winner = 'Player "O"';
+        winningOption = option;
       }
     });
 
@@ -107,6 +111,7 @@ const gameLogic = (() => {
   const getIsThereWinner = () => isThereWinner;
   const getWinner = () => winner;
   const getDraw = () => draw;
+  const getWinningOption = () => winningOption;
 
 
   function startGame(e) {
@@ -163,6 +168,7 @@ const gameLogic = (() => {
     getIsThereWinner,
     getWinner,
     getDraw,
+    getWinningOption,
   };
 })();
 
@@ -178,9 +184,12 @@ const displayControler = (() => {
   const [xButton, oButton] = chooseMarkButtons;
   const playerOneTag = document.createElement('p');
   const playerTwoTag = document.createElement('p');
+  const tagContainers = document.querySelectorAll('.tag-container');
+  const [playerXTagCtnr, playerOTagCtnr] = tagContainers;
   const startButtonContainer = document.querySelector('.start-button-container');
   const startButton = document.createElement('button');
   const restartButton = document.createElement('button');
+  const winningMsgContainer = document.querySelector('.win-msg-ctnr');
   const winningMsg = document.createElement('p');
   const chooseEnemyContainer = document.querySelector('.choose-human-or-ai-ctnr');
   const chooseEnemyButtons = document.querySelectorAll('.choose-enemy');
@@ -217,25 +226,30 @@ const displayControler = (() => {
     const winner = gameLogic.getWinner();
     const isThereWinner = gameLogic.getIsThereWinner();
     const draw = gameLogic.getDraw();
+    const winningOption = gameLogic.getWinningOption();
+
     if (isThereWinner) {
       winningMsg.textContent = `The winner is ${winner}`;
-      gameBoardContainer.appendChild(winningMsg);
-      gameBoardContainer.appendChild(restartButton);
+      winningOption.forEach((option) => {
+        fields[option].classList.add('winner');
+      });
     }
     if (draw === true) {
       winningMsg.textContent = 'It is a draw';
-      gameBoardContainer.appendChild(winningMsg);
-      gameBoardContainer.appendChild(restartButton);
+    }
+    if (isThereWinner || draw === true) {
+      winningMsgContainer.appendChild(winningMsg);
+      winningMsgContainer.appendChild(restartButton);
     }
   }
 
   function chooseMark(e) {
     gameLogic.startGame(e);
-    e.target.parentNode.appendChild(playerOneTag);
+    e.target.nextElementSibling.appendChild(playerOneTag);
     if (e.target === xButton) {
-      oContainer.appendChild(playerTwoTag);
+      playerOTagCtnr.appendChild(playerTwoTag);
     } else if (e.target === oButton) {
-      xContainer.appendChild(playerTwoTag);
+      playerXTagCtnr.appendChild(playerTwoTag);
     }
     clicked = true;
     if (clicked) {
@@ -292,6 +306,9 @@ const displayControler = (() => {
   startButton.addEventListener('click', switchScreen);
 
   restartButton.addEventListener('click', (e) => {
+    fields.forEach((field) => {
+      field.classList.remove('winner');
+    });
     chooseMarkButtons.forEach((button) => {
       button.addEventListener('click', chooseMark);
     });

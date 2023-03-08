@@ -26,6 +26,7 @@ body {
     flex-direction: column;
     justify-content: center;
     align-items: center;
+    border: 1px solid black;
 }
 
 .gameboard-container.hidden {
@@ -36,19 +37,33 @@ body {
     height: 30rem;
     width: 30rem;
     margin-top: 5%;
-    border: 1px solid black;
+    margin-bottom: 2%;
 
     display: grid;
     grid-template-columns: 1fr 1fr 1fr;
     grid-template-rows: 1fr 1fr 1fr;
 }
 
+.win-msg-ctnr {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    height: 8rem;
+    width: 20rem;
+}
+
 .field {
-    border: 1px solid black;
+    border: 3px solid var(--hovered-font-clr);
     font-size: 6rem;
     display: flex;
     justify-content: center;
     align-items: center;
+}
+
+.field.winner {
+    background-color: var(--button-bckgrnd-clr);
+    color: var(--hovered-font-clr);
 }
 
 .row-one {
@@ -68,7 +83,6 @@ body {
 }
 
 .new-game {
-    /* display: block; */
     display: none;
     margin-top: 5rem;
     padding: 5px 10px;
@@ -103,9 +117,16 @@ body {
     height: 28rem;
     display: flex;
     flex-direction: column-reverse;
-    /* border: 1px solid black; */
     align-items: center;
     justify-content: center;
+}
+
+.tag-container {
+    height: 3rem;
+    width: 100%;
+
+    display: flex;
+    align-items: flex-end;
 }
 
 .choose-box {
