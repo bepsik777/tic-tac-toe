@@ -1,5 +1,10 @@
+@import url('https://fonts.googleapis.com/css2?family=Roboto+Mono:wght@400;500&display=swap');
+
 :root {
     --system-ui: system-ui, "Segoe UI", Roboto, Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
+    --main-font:'Roboto Mono', monospace;
+    --hovered-font-clr: #dbeafe;
+    --button-bckgrnd-clr: #3b82f6;
   }
 
 * {
@@ -9,7 +14,9 @@
 
 body {
     min-height: 100vh;
-    font-family: var(--system-ui);
+    font-family: var(--main-font);
+    font-weight: 500;
+    background-color: #cbd5e1
    
 }
 
@@ -70,7 +77,6 @@ body {
 /* Welcom screen */
 
 .welcome-container {
-    background-color: red;
     min-height: 100vh; 
 }
 
@@ -84,13 +90,10 @@ body {
     justify-content: center;
     align-items: flex-end;
     height: 20vh;
-    background-color: aquamarine;
-    border: 1px solid black;
 }
 
 .choose-mark-container {
     height: 70vh;
-    background-color:cornflowerblue;
     display: flex;
     justify-content: space-around;
     align-items: center;
@@ -100,28 +103,70 @@ body {
     height: 28rem;
     display: flex;
     flex-direction: column-reverse;
+    /* border: 1px solid black; */
+    align-items: center;
+    justify-content: center;
 }
 
 .choose-box {
+    border: none;
+    background-color: #eff6ff;
     display: flex;
     justify-content: center;
     align-items: center;
 
-    font-size: 20rem;
-    height: 25rem;
-    width: 25rem;
-    background-color: aqua;
-    cursor: pointer;
+    margin-top: 10px;
+    font-size: 10rem;
+    height: 18rem;
+    width: 18rem;
+}
+
+.choose-box:hover {
+    background-color: var(--button-bckgrnd-clr);
+    color: var(--hovered-font-clr);
 }
 
 .start-button-container {
     height: 10vh;
-    background-color: darkgrey;
 
     display: flex;
     justify-content: center;
     align-items: center;
 }
+
+.start-button {
+    background-color: #eff6ff;
+    font-family: var(--main-font);
+    border: none;
+    width: 200px;
+    height: 50px;
+    margin: 20px;
+}
+
+.start-button:hover {
+    background-color: var(--button-bckgrnd-clr);
+    color: var(--hovered-font-clr);
+    font-weight: 700;
+}
+
+.start-button:active {
+    background-color: #3b82f6;
+}
+
+.restart-button {
+    background-color: #eff6ff;
+    font-family: var(--main-font);
+    border: none;
+    width: 200px;
+    height: 50px;
+    margin: 20px;
+}
+.restart-button:hover {
+    background-color: var(--button-bckgrnd-clr);
+    color: var(--hovered-font-clr);
+    font-weight: 700;
+}
+
 
 .choose-human-or-ai-ctnr {
     height: 100vh;
@@ -136,8 +181,20 @@ body {
 }
 
 .choose-enemy {
+    background-color: #eff6ff;
+    font-family: var(--main-font);
     border: none;
     width: 200px;
     height: 50px;
     margin: 20px;
+}
+
+.choose-enemy:hover {
+    color: var(--hovered-font-clr);
+    background-color: var(--button-bckgrnd-clr);
+    font-weight: 700;
+}
+
+.choose-enemy:active {
+    background-color: #3b82f6;
 }
