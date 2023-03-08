@@ -186,7 +186,7 @@ const displayControler = (() => {
   const playerTwoTag = document.createElement('p');
   const tagContainers = document.querySelectorAll('.tag-container');
   const [playerXTagCtnr, playerOTagCtnr] = tagContainers;
-  const startButtonContainer = document.querySelector('.start-button-container');
+  const startButtonContainer = document.querySelector('.start-game-container');
   const startButton = document.createElement('button');
   const restartButton = document.createElement('button');
   const winningMsgContainer = document.querySelector('.win-msg-ctnr');

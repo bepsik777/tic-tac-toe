@@ -92,6 +92,10 @@ body {
 
 .welcome-container {
     min-height: 100vh; 
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
 }
 
 .welcome-container.hidden {
@@ -107,9 +111,10 @@ body {
 }
 
 .choose-mark-container {
+    width: 65%;
     height: 70vh;
     display: flex;
-    justify-content: space-around;
+    justify-content: space-between;
     align-items: center;
 }
 
@@ -147,13 +152,11 @@ body {
     color: var(--hovered-font-clr);
 }
 
-.start-button-container {
-    height: 10vh;
-
-    display: flex;
-    justify-content: center;
-    align-items: center;
+.start-game-container {
+    width: 200px;
+    height: 50px;
 }
+
 
 .start-button {
     background-color: #eff6ff;
@@ -161,7 +164,6 @@ body {
     border: none;
     width: 200px;
     height: 50px;
-    margin: 20px;
 }
 
 .start-button:hover {
@@ -188,6 +190,11 @@ body {
     font-weight: 700;
 }
 
+
+h1 {
+    font-size: 2rem;
+    margin-bottom: 80px;
+}
 
 .choose-human-or-ai-ctnr {
     height: 100vh;

@@ -5,9 +5,32 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="styles.css">
-    <title>Document</title>
+    <title>Tic Tac Toe</title>
 </head>
 <body>
+    <div class="choose-human-or-ai-ctnr">
+        <h1>Tic Tac Toe</h1>
+        <button class="choose-enemy">VS. AI</button>
+        <button class="choose-enemy">VS. HUMAN</button>
+    </div>
+    <div class="welcome-container hidden">
+        <div class="choose-mark-text">
+            <p class="choose-mark">Player one: choose your mark</p>
+        </div>    
+        <div class="choose-mark-container">
+            <div class="choose-box-container">
+                <button class="choose-box">X</button>
+                <div class="tag-container"></div>
+            </div>
+            <div class="start-game-container"></div>
+            <div class="choose-box-container">
+                <button class="choose-box">O</button>
+                <div class="tag-container"></div>
+            </div>
+        </div>
+        <div class="start-button-container">
+        </div>
+    </div>
     <div class="gameboard-container hidden">
         <div class="gameboard">
                 <div class="field row-one column-one"></div>
@@ -22,27 +45,6 @@
         </div>
         <div class="win-msg-ctnr"></div>
         <button class="new-game">New Game</button>
-    </div>
-    <div class="welcome-container hidden">
-        <div class="choose-mark-text">
-            <p class="choose-mark">Player one: choose your mark</p>
-        </div>    
-        <div class="choose-mark-container">
-            <div class="choose-box-container">
-                <button class="choose-box">X</button>
-                <div class="tag-container"></div>
-            </div>
-            <div class="choose-box-container">
-                <button class="choose-box">O</button>
-                <div class="tag-container"></div>
-            </div>
-        </div>
-        <div class="start-button-container">
-        </div>
-    </div>
-    <div class="choose-human-or-ai-ctnr">
-        <button class="choose-enemy">VS. AI</button>
-        <button class="choose-enemy">VS. HUMAN</button>
     </div>
 
 <script src="script.js"></script>
